@@ -14,7 +14,9 @@ const addProxy = (({ app }) => {
                 '/api/v1/users-service':'/users',
             },
             changeOrigin: true,
-            logLevel: 'debug'
+            headers: {
+                [process.env.GATEWAY_API_KEY_HEADER_NAME]: process.env.GATEWAY_TARGET_USERS_SERVICE_API_KEY,
+            },
         }),
     );
 });
