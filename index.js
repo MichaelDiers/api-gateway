@@ -6,4 +6,4 @@ const app = express();
 
 addProxis.forEach((addProxy) => addProxy({ app }));
 
-app.listen(process.env.PORT);
+app.listen(process.env.GATEWAY_PORT);

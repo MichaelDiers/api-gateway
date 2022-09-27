@@ -42,7 +42,7 @@ jobs:
       - name: install gh-pages and compodoc
         run: npm install gh-pages @compodoc/compodoc
       - name: create docs
-        run: npx @compodoc/compodoc -p tsconfig.json -n "${{ env.DOCS }} (v${{ github.run_number }})" -d ${{ env.DOCS_DIR }}
+        run: npx @compodoc/compodoc -n "${{ env.DOCS }} (v${{ github.run_number }})" -d ${{ env.DOCS_DIR }}
       - name: Deploy with gh-pages
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
