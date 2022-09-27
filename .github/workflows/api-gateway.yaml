@@ -1,0 +1,51 @@
+name: api gateway
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    environment: production
+    env:
+      GCLOUD_DEPLOYMENT_SERVICE_ACCOUNT: ${{ secrets.GCLOUD_DEPLOYMENT_SERVICE_ACCOUNT }}
+      GCLOUD_RUNNER_SERVICE_ACCOUNT: ${{ secrets.GCLOUD_RUNNER_SERVICE_ACCOUNT }}
+      GCLOUD_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCLOUD_WORKLOAD_IDENTITY_PROVIDER }}
+      SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+      DESCRIPTION: ${{ secrets.DESCRIPTION }}
+      GATEWAY_TARGET_HEALTH_SERVICE: ${{ secrets.GATEWAY_TARGET_HEALTH_SERVICE }}
+      GATEWAY_PORT: ${{ secrets.GATEWAY_PORT }}
+      DOCS: ${{ secrets.DOCS }}
+      DOCS_DIR: docs
+    steps:
+      - uses: actions/checkout@v3
+      - name: update Dockerfile
+        run: |
+          echo "ENV GATEWAY_TARGET_HEALTH_SERVICE=${{ env.GATEWAY_TARGET_HEALTH_SERVICE }}" >> Dockerfile
+          echo "ENV GATEWAY_PORT=${{ env.GATEWAY_PORT }}" >> Dockerfile
+          echo "EXPOSE ${{ env.GATEWAY_PORT }}" >> Dockerfile
+          echo "CMD [\"node\", \"index.js\"]" >> Dockerfile
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          token_format: 'id_token'
+          workload_identity_provider: '${{ env.GCLOUD_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ env.GCLOUD_DEPLOYMENT_SERVICE_ACCOUNT }}'
+          id_token_audience: '${{ env.GCLOUD_WORKLOAD_IDENTITY_PROVIDER }}'
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+      - name: 'Use gcloud CLI'
+        run: 'gcloud run deploy "${{ env.SERVICE_NAME }}" --source . --allow-unauthenticated --description="${{ env.DESCRIPTION }}" --region=us-central1 --port=${{ env.GATEWAY_PORT }} --service-account=${{ secrets.GCLOUD_RUNNER_SERVICE_ACCOUNT }}'
+      - name: install gh-pages and compodoc
+        run: npm install gh-pages @compodoc/compodoc
+      - name: create docs
+        run: npx @compodoc/compodoc -p tsconfig.json -n "${{ env.DOCS }} (v${{ github.run_number }})" -d ${{ env.DOCS_DIR }}
+      - name: Deploy with gh-pages
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npx gh-pages -d ${{ env.DOCS_DIR }} -u "github-actions-bot <support+actions@github.com>"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
