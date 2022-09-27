@@ -14,6 +14,9 @@ const addProxy = (({ app }) => {
                 '/api/v1/health-service':'/',
             },
             changeOrigin: true,
+            headers: {
+                [process.env.GATEWAY_API_KEY_HEADER_NAME]: process.env.GATEWAY_TARGET_HEALTH_SERVICE_API_KEY,
+            },
         }),
     );
 });
