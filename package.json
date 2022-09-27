@@ -1,0 +1,30 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "api gateway for services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelDiers/api-gateway.git"
+  },
+  "keywords": [
+    "gateway"
+  ],
+  "author": "Michael Diers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MichaelDiers/api-gateway/issues"
+  },
+  "homepage": "https://github.com/MichaelDiers/api-gateway#readme",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "http-proxy-middleware": "^2.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
