@@ -16,6 +16,7 @@ jobs:
       SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
       DESCRIPTION: ${{ secrets.DESCRIPTION }}
       GATEWAY_TARGET_HEALTH_SERVICE: ${{ secrets.GATEWAY_TARGET_HEALTH_SERVICE }}
+      GATEWAY_TARGET_USERS_SERVICE: ${{ secrets.GATEWAY_TARGET_USERS_SERVICE }}
       GATEWAY_PORT: ${{ secrets.GATEWAY_PORT }}
       DOCS: ${{ secrets.DOCS }}
       DOCS_DIR: docs
@@ -24,6 +25,7 @@ jobs:
       - name: update Dockerfile
         run: |
           echo "ENV GATEWAY_TARGET_HEALTH_SERVICE=${{ env.GATEWAY_TARGET_HEALTH_SERVICE }}" >> Dockerfile
+          echo "ENV GATEWAY_TARGET_USERS_SERVICE=${{ env.GATEWAY_TARGET_USERS_SERVICE }}" >> Dockerfile
           echo "ENV GATEWAY_PORT=${{ env.GATEWAY_PORT }}" >> Dockerfile
           echo "EXPOSE ${{ env.GATEWAY_PORT }}" >> Dockerfile
           echo "CMD [\"node\", \"index.js\"]" >> Dockerfile
