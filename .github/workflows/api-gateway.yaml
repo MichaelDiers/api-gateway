@@ -41,13 +41,3 @@ jobs:
         uses: 'google-github-actions/setup-gcloud@v0'
       - name: 'Use gcloud CLI'
         run: 'gcloud run deploy "${{ env.SERVICE_NAME }}" --source . --allow-unauthenticated --description="${{ env.DESCRIPTION }}" --region=us-central1 --port=${{ env.GATEWAY_PORT }} --service-account=${{ secrets.GCLOUD_RUNNER_SERVICE_ACCOUNT }}'
-      - name: install gh-pages and compodoc
-        run: npm install gh-pages @compodoc/compodoc
-      - name: create docs
-        run: npx @compodoc/compodoc -n "${{ env.DOCS }} (v${{ github.run_number }})" -d ${{ env.DOCS_DIR }}
-      - name: Deploy with gh-pages
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npx gh-pages -d ${{ env.DOCS_DIR }} -u "github-actions-bot <support+actions@github.com>"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
