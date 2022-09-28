@@ -11,6 +11,7 @@ const addProxy = (({ app }) => {
         createProxyMiddleware({
             target: process.env.GATEWAY_TARGET_USERS_SERVICE,
             pathRewrite: {
+                '/api/v1/users-service/health':'/health',
                 '/api/v1/users-service':'/users',
             },
             changeOrigin: true,
